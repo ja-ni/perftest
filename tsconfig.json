@@ -1,0 +1,12 @@
+{
+	"compilerOptions": {
+		"baseUrl": ".",
+		"target": "esnext",
+		"moduleResolution": "node",
+		"module": "esm",
+		"strict": true,
+		"isolatedModules": true,
+		"esModuleInterop": true,
+		"jsx": "react"
+	}
+}

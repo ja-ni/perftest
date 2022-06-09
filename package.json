@@ -1,0 +1,30 @@
+{
+  "name": "perftest",
+  "version": "1.0.0",
+  "description": "",
+  "main": "perftest.js",
+  "module": "perftest.tsx",
+  "dependencies": {
+    "@react-facet/core": "^0.3.0",
+    "@react-facet/dom-fiber": "^0.3.0",
+    "console-polyfill": "^0.3.0",
+    "linkedom": "^0.14.11",
+    "react": "^18.1.0",
+    "react-dom": "^18.1.0",
+    "react-reconciler": "^0.28.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.12",
+    "@types/react-dom": "^18.0.5",
+    "@types/react-reconciler": "^0.26.7",
+    "esbuild": "^0.14.42",
+    "react-test-renderer": "^18.1.0"
+  },
+  "scripts": {
+    "build": "esbuild tests/**.tsx --bundle --outdir=run",
+    "run": "find run -iname '*.js' -exec d8 '{}' \\;",
+    "rerun": "rm -rf run && mkdir run && npm run build && npm run run"
+  },
+  "author": "James Nicholls",
+  "license": "ISC"
+}
