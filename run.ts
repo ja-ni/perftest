@@ -55,8 +55,9 @@ const runs = Array.from(Deno.readDirSync("runs"))
 
     await run.status();
 
-    const [_, time] = new TextDecoder()
-      .decode(await run.output())
+    const output = new TextDecoder().decode(await run.output())
+
+    const [_, time] = output
       .split(",")
       .map((part: string) => part.trim());
 

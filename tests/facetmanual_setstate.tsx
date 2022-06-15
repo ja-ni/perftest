@@ -1,8 +1,8 @@
-import React from 'react'
+import React, { useRef } from 'react'
 
-import { useFacetState, useFacetEffect } from '@react-facet/core'
+import { useFacetEffect, useFacetState } from '@react-facet/core'
 import { createFiberRoot, createReconciler } from '@react-facet/dom-fiber'
-
+ 
 import { root, dom } from '../dom'
 
 window = dom.window
@@ -11,26 +11,30 @@ document = dom.document
 const Counter = () => {
   const [counter, setCounter] = useFacetState(0)
 
+  const ref = useRef<HTMLSpanElement>(null)
+ 
   useFacetEffect(
     (value) => {
+      if (ref.current === null) return
+
       value !== ITERATIONS
         ? Promise.resolve(1).then(() => setCounter(value + 1))
         : console.timeEnd("test")
+ 
+      ref.current.textContent = `${value ?? 0}`
     },
     [],
     [counter],
   )
-
-  console.log(counter);
-  
+ 
   return (
     <div>
       <p>
-        Counter: <fast-text text={counter} />
+        Counter: <span ref={ref} />
       </p>
     </div>
   )
-} 
+}
 
 const reconcilerInstance = createReconciler()
 
