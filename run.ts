@@ -87,7 +87,7 @@ const json = results.reduce((acc, [lib, test, iterations, time]) => ({
   },
 }), {});
 
-console.log(json);
+console.log(JSON.stringify(json));
 
 // Cleanup
 try {
