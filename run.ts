@@ -1,15 +1,16 @@
 /// <reference lib="esnext" />
 
-import * as R from "https://esm.sh/ramda@0.28.0";
-
 import { join } from "https://deno.land/std@0.142.0/path/mod.ts";
 
 import { build, stop } from "https://deno.land/x/esbuild@v0.14.38/mod.js";
 
 const INDIR = "tests";
-const OUTDIR = "runs";
+const TMPDIR = "runs";
+const RESULTSDIR = "results";
 
 const iterations = [
+  1,
+  10,
   100,
   1_000,
   10_000,
@@ -17,25 +18,24 @@ const iterations = [
   1_000_000,
 ];
 
+// Clean any existing output directories
+try {
+  Deno.removeSync(TMPDIR, { recursive: true });
+} catch {
+}
+
 // Get source files from the test directory
 const entryPoints = Array.from(Deno.readDirSync("tests"))
   .map(({ name }) => join(INDIR, name));
-
-// Clean any existing output directories
-try {
-  Deno.removeSync(OUTDIR, { recursive: true });
-} catch {
-}
 
 // Expand the test files for each number of iterations
 const tests = iterations.map((iteration) =>
   build({
     entryPoints,
     entryNames: `[name]_${iteration}`,
-    outdir: OUTDIR,
+    outdir: TMPDIR,
     bundle: true,
     minify: true,
-    // write: false,
     define: {
       ITERATIONS: `${iteration}`,
     },
@@ -48,7 +48,7 @@ await Promise.allSettled(tests);
 const runs = Array.from(Deno.readDirSync("runs"))
   .map(async ({ name }: any) => {
     const run = Deno.run({
-      cmd: ["d8", join(OUTDIR, name)],
+      cmd: ["d8", join(TMPDIR, name)],
       stdin: "piped",
       stdout: "piped",
     });
@@ -71,27 +71,31 @@ const runs = Array.from(Deno.readDirSync("runs"))
     ];
   });
 
-// Print the test results on screen
+// Filter any erronous runs and return the output values
 const results = (await Promise.allSettled(runs))
   .filter(({ status }) => status === "fulfilled")
   .map(({ value }: any) => value);
 
+// Structure the output data into a nested json object
 const json = results.reduce((acc, [lib, test, iterations, time]) => ({
   ...acc,
-  [lib]: {
-    ...acc[lib] ?? {},
-    [test]: {
-      ...acc?.[lib]?.[test] ?? {},
+  [test]: {
+    ...acc[test] ?? {},
+    [lib]: {
+      ...acc?.[test]?.[lib] ?? {},
       [iterations]: time,
     },
   },
 }), {});
 
-console.log(JSON.stringify(json));
+// Write ouput results to file
+const jsonText = new TextEncoder().encode(JSON.stringify(json))
+
+await Deno.writeFile(join(RESULTSDIR, `results-${Date.now()}.json`), jsonText)
 
 // Cleanup
 try {
-  Deno.removeSync(OUTDIR, { recursive: true });
+  Deno.removeSync(TMPDIR, { recursive: true });
 } catch {
 }
 
