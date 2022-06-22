@@ -20,9 +20,19 @@ Tests cases go in the `tests` folder and are written in Typescript using `tsx`. 
 
 The general timing pattern is as follows, mount the component, begin timer, run iterations, end timer.
 
+## Running Tests
+
+Run the `main.ts` entry script using Deno.
+
+The test can also be run using the pre-configured `tests` Deno task as shown below:
+
+```shell
+$ deno task tests
+```
+
 ## Application Overview
 
-The `run.ts` is the initial entry point to the application and performs a series of tasks to produce an output `results-[epochtime].json` file. The series of actions are as follows.
+The `main.ts` is the initial entry point to the application and performs a series of tasks to produce an output `results-[epochtime].json` file. The series of actions are as follows.
 
 - Clean the temporary file storage directory
 - Read the `.tsx` filenames from the `tests` directory
