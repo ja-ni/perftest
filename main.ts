@@ -88,10 +88,23 @@ const json = results.reduce((acc, [lib, test, iterations, time]) => ({
   },
 }), {});
 
-// Write ouput results to file
-const jsonText = new TextEncoder().encode(JSON.stringify(json))
+// Load existing results
+const previous = (async () => {
+  try {
+    return JSON.parse(await Deno.readTextFile('results.json'))
+  } catch {
+    return {}
+  }
+})()
 
-await Deno.writeFile(join(RESULTSDIR, `results-${Date.now()}.json`), jsonText)
+
+// Write ouput results to file
+const jsonText = new TextEncoder().encode(JSON.stringify({
+  ...previous,
+  [Date.now()]: json
+}))
+
+await Deno.writeFile(join(RESULTSDIR, 'results.json'), jsonText)
 
 // Cleanup
 try {

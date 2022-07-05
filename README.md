@@ -46,7 +46,7 @@ The `main.ts` is the initial entry point to the application and performs a serie
 
 ## Deployment
 
-The resulting output data is stored within Github pages / releases for later data processing and visualisation.
+The resulting output data is to be stored within Github pages / releases for later data processing and visualisation.
 
 ## Considerations
 
