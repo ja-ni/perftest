@@ -113,4 +113,6 @@ try {
 
 stop();
 
+console.log('Results updated!')
+
 Deno.exit();
