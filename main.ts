@@ -6,7 +6,6 @@ import { build, stop } from "https://deno.land/x/esbuild@v0.14.38/mod.js";
 
 const INDIR = "tests";
 const TMPDIR = "runs";
-const RESULTSDIR = "results";
 
 const iterations = [
   1,
@@ -104,7 +103,7 @@ const jsonText = new TextEncoder().encode(JSON.stringify({
   [Date.now()]: json
 }))
 
-await Deno.writeFile(join(RESULTSDIR, 'results.json'), jsonText)
+await Deno.writeFile('results.json', jsonText)
 
 // Cleanup
 try {
