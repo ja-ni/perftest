@@ -15,6 +15,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - uses: actions/download-artifact@v3
+        with:
+          name: results
       - name: Install
         run: npm ci
       - name: Deno
@@ -23,7 +26,7 @@ jobs:
           deno-version: v1.x
       - name: Runner
         run: deno task tests
-      - name: Deploy
-        uses: JamesIves/github-pages-deploy-action@v4
+      - uses: actions/upload-artifact@v3
         with:
-          folder: results
+          name: results
+          path: results.json
