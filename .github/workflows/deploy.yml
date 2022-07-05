@@ -27,7 +27,12 @@ jobs:
           deno-version: v1.x
       - name: Runner
         run: deno task tests
-      - uses: actions/upload-artifact@v3
+      - name: Artifact
+        uses: actions/upload-artifact@v3
         with:
           name: results
           path: results.json
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: results.json
