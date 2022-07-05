@@ -15,10 +15,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - uses: actions/download-artifact@v3
-        continue-on-error: true
-        with:
-          name: results
       - name: Install
         run: npm ci
       - name: Deno
@@ -27,8 +23,8 @@ jobs:
           deno-version: v1.x
       - name: Runner
         run: deno task tests
-      - name: Artifact
-        uses: actions/upload-artifact@v3
+      - name: Commit
+        uses: stefanzweifel/git-auto-commit-action@v4
+        if: steps.auto-commit-action.outputs.changes_detected == 'true'
         with:
-          name: results
-          path: results.json
+          commit_message: updates results
