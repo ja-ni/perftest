@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { useFacetState, useFacetEffect } from '@react-facet/core'
+import { useFacetState, useFacetEffect, Map, useFacetWrap, useFacetMap } from '@react-facet/core'
 import { createFiberRoot, createReconciler } from '@react-facet/dom-fiber'
 
 import { root, dom } from '../dom'
@@ -10,6 +10,7 @@ document = dom.document
 
 const Component = () => {
   const [counter, setCounter] = useFacetState(0)
+  const list = useFacetWrap([])
 
   useFacetEffect(
     (value) => {
@@ -18,14 +19,20 @@ const Component = () => {
         : console.timeEnd("test")
     },
     [],
-    [counter],
+    [counter]
   )
 
+  const listUpdate = useFacetMap(() => Array.from({length: parseInt(Math.random() * 100)}, () => `${Math.random()}`), [], [counter])
+  
   return (
     <div>
-      <p>
-        Counter: <fast-text text={counter} />
-      </p>
+      <Map array={listUpdate}>
+        {(item) => (
+          <p>
+            Map: {item}
+          </p>
+        )}
+      </Map>
     </div>
   )
 } 

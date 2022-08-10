@@ -8,12 +8,12 @@ const INDIR = "tests";
 const TMPDIR = "runs";
 
 const iterations = [
-  1,
-  10,
-  100,
-  1_000,
-  10_000,
-  100_000,
+  ...Array.from({ length: 9 }, (_, i) => (i + 1) * 1),
+  ...Array.from({ length: 9 }, (_, i) => (i + 1) * 10),
+  ...Array.from({ length: 9 }, (_, i) => (i + 1) * 100),
+  ...Array.from({ length: 9 }, (_, i) => (i + 1) * 1000),
+  ...Array.from({ length: 9 }, (_, i) => (i + 1) * 10_000),
+  ...Array.from({ length: 9 }, (_, i) => (i + 1) * 100_000),
   1_000_000,
 ];
 
@@ -45,7 +45,7 @@ await Promise.allSettled(tests);
 
 // Run the newly compiled test files using d8 and return the stdout result
 const runs = Array.from(Deno.readDirSync("runs"))
-  .map(async ({ name }: any) => {
+  .map(({ name }: any) => async () => {
     const run = Deno.run({
       cmd: ["d8", join(TMPDIR, name)],
       stdin: "piped",
@@ -55,6 +55,8 @@ const runs = Array.from(Deno.readDirSync("runs"))
     await run.status();
 
     const output = new TextDecoder().decode(await run.output())
+    
+    console.log(output)
 
     const [_, time] = output
       .split(",")
@@ -71,9 +73,17 @@ const runs = Array.from(Deno.readDirSync("runs"))
   });
 
 // Filter any erronous runs and return the output values
-const results = (await Promise.allSettled(runs))
-  .filter(({ status }) => status === "fulfilled")
-  .map(({ value }: any) => value);
+// const results = (await Promise.allSettled(runs))
+//   .filter(({ status }) => status === "fulfilled")
+//   .map(({ value }: any) => value);
+
+const asyncSyncArray = async ([x, ...xs], rs = []) => (
+  xs.length
+    ? asyncSyncArray(xs, [...rs, await x()])
+    : [...rs, await x()]
+)
+
+const results = await asyncSyncArray(runs)
 
 // Structure the output data into a nested json object
 const json = results.reduce((acc, [lib, test, iterations, time]) => ({

@@ -17,6 +17,7 @@
     "@types/react": "^18.0.12",
     "@types/react-dom": "^18.0.5",
     "@types/react-reconciler": "^0.26.7",
+    "@typescript-eslint/parser": "^5.33.0",
     "esbuild": "^0.14.42",
     "react-test-renderer": "^18.1.0"
   },
