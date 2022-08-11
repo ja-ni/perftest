@@ -10,11 +10,11 @@ const TMPDIR = "runs";
 const iterations = [
   ...Array.from({ length: 9 }, (_, i) => (i + 1) * 1),
   ...Array.from({ length: 9 }, (_, i) => (i + 1) * 10),
-  ...Array.from({ length: 9 }, (_, i) => (i + 1) * 100),
-  ...Array.from({ length: 9 }, (_, i) => (i + 1) * 1000),
-  ...Array.from({ length: 9 }, (_, i) => (i + 1) * 10_000),
-  ...Array.from({ length: 9 }, (_, i) => (i + 1) * 100_000),
-  1_000_000,
+  // ...Array.from({ length: 9 }, (_, i) => (i + 1) * 100),
+  // ...Array.from({ length: 9 }, (_, i) => (i + 1) * 1000),
+  // ...Array.from({ length: 9 }, (_, i) => (i + 1) * 10_000),
+  // ...Array.from({ length: 9 }, (_, i) => (i + 1) * 100_000),
+  // 1_000_000,
 ];
 
 // Clean any existing output directories
@@ -50,13 +50,14 @@ const runs = Array.from(Deno.readDirSync("runs"))
       cmd: ["d8", join(TMPDIR, name)],
       stdin: "piped",
       stdout: "piped",
+      stderr: "piped",
     });
 
     await run.status();
 
     const output = new TextDecoder().decode(await run.output())
     
-    console.log(output)
+    // console.log(output)
 
     const [_, time] = output
       .split(",")

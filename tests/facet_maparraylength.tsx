@@ -22,14 +22,14 @@ const Component = () => {
     [counter]
   )
 
-  const listUpdate = useFacetMap(() => Array.from({length: parseInt(Math.random() * 100)}, () => `${Math.random()}`), [], [counter])
-  
+  const listUpdate = useFacetMap(() => Array.from({length: parseInt(Math.random() * 20)}, () => '' + Math.random()), [], [counter])
+
   return (
     <div>
       <Map array={listUpdate}>
         {(item) => (
           <p>
-            Map: {item}
+            Map: <fast-text text={item} />
           </p>
         )}
       </Map>
